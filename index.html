@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小小加法樂園｜幼兒 10、20 以內加法練習</title>
+<meta name="description" content="給幼兒的互動加法練習：拖曳球體驗 3+4=4+3（加法交換律），並可一鍵產生可列印的 A4 看圖加法學習單。">
+<meta property="og:title" content="小小加法樂園">
+<meta property="og:description" content="拖曳球練習 10、20 以內加法，一鍵產生看圖加法學習單。">
+<meta name="theme-color" content="#FF9F1C">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧸</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF6E5;--ink:#3B2E2A;--line:#F1DFC2;--accent:#FF9F1C;--a:#FF7A59;--ad:#D9472A;--b:#3FA9F5;--bd:#1B74B8;--good:#2BB673;--soft:#B08A66}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;-webkit-tap-highlight-color:transparent}
+.num{font-family:"Baloo 2","Noto Sans TC",sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 18px;max-width:980px;margin:0 auto}
+h1{margin:0;font-size:24px;font-weight:900;letter-spacing:1px}
+.tabs{display:flex;gap:4px;background:#F6E7CC;padding:4px;border-radius:999px}
+.tab{border:0;background:transparent;padding:8px 16px;border-radius:999px;font:inherit;font-weight:700;color:#8A6E55;cursor:pointer}
+.tab.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px #0001}
+main{max-width:980px;margin:0 auto;padding:0 14px 40px}
+.panel{display:none}.panel.on{display:block}
+.card{background:#fff;border-radius:28px;padding:18px;box-shadow:0 6px 0 var(--line);margin-bottom:16px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+.btn{border:0;font:inherit;font-weight:800;font-size:18px;padding:12px 20px;border-radius:18px;cursor:pointer;background:#FFE3B3;color:var(--ink);box-shadow:0 4px 0 #E8C285;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #E8C285}
+.btn.big{background:var(--accent);color:#fff;box-shadow:0 4px 0 #D97F00}
+.btn.blue{background:#CDEBFF;box-shadow:0 4px 0 #9CCBEA}
+.btn.green{background:#C8F2D9;box-shadow:0 4px 0 #8FD3AB}
+.btn.sm{font-size:15px;padding:8px 12px;border-radius:14px}
+.mini{font-size:15px;color:#8A6E55;display:flex;gap:6px;align-items:center;font-weight:700}
+select{font:inherit;padding:6px 8px;border-radius:10px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+
+.eqn{display:flex;justify-content:center;align-items:center;gap:clamp(6px,3vw,26px);font-size:clamp(52px,13vw,110px);font-weight:800;line-height:1.05;margin-top:12px}
+.eqn .n{min-width:1.1em;text-align:center;display:inline-block;transition:transform .6s cubic-bezier(.5,0,.3,1)}
+.eqn .op{color:#D2AE8A}
+.eqn .t{color:var(--good);background:#EAFBF1;border-radius:24px;padding:0 .18em;min-width:1.3em}
+.eqn .t.q{color:#D2AE8A;background:#FFF1D6}
+.eqn .t.pop{animation:pop .5s}
+.say{display:flex;gap:10px;align-items:center;justify-content:center;font-size:clamp(17px,3.8vw,22px);font-weight:700;min-height:48px;margin:6px 0 4px;text-align:center}
+.bear{font-size:30px}
+
+.play{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(6px,2vw,18px);align-items:start;max-width:760px;margin:8px auto 0}
+.plus{font-size:clamp(32px,7vw,56px);font-weight:800;color:#D2AE8A;align-self:center;margin-top:-30px}
+.col{display:flex;flex-direction:column;min-width:0}
+.basket{background:#FFF9EF;border:4px solid #F3DDB8;border-radius:24px;padding:clamp(6px,1.6vw,12px);display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(4px,1vw,8px);touch-action:none;transition:transform .6s cubic-bezier(.5,0,.3,1),border-color .15s,background .15s}
+.basket.over{border-color:var(--accent);background:#FFEBC4}
+.gap10{grid-column:1/-1;border-top:3px dotted #EAD3AE;margin:1px 4px}
+.slot{aspect-ratio:1;border-radius:50%;border:2px dashed #EAD3AE;position:relative}
+.ball{position:absolute;inset:-2px;border-radius:50%;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;display:flex;align-items:center;justify-content:center;color:#fff;font:800 clamp(13px,2.8vw,24px) "Baloo 2",sans-serif;text-shadow:0 1px 2px #0006;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.9) 0 9%,rgba(255,255,255,0) 10%),radial-gradient(circle at 45% 40%,var(--c) 0 55%,var(--cd) 100%);box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.ball.a{--c:var(--a);--cd:var(--ad)}
+.ball.b{--c:var(--b);--cd:var(--bd)}
+.ball.lifted{opacity:.25}
+.ball.hide{visibility:hidden}
+.ball.in{animation:pop .35s}
+.ball.static{cursor:default}
+.ghost{position:fixed!important;inset:auto!important;pointer-events:none;z-index:50;transform:scale(1.18);box-shadow:0 12px 20px rgba(0,0,0,.25)}
+.edit{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.edit button{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:#fff;font-size:20px;font-weight:800;color:#B9997A;cursor:pointer;line-height:1}
+.lbl{text-align:center;font-weight:800;color:var(--soft);font-size:15px;margin:4px 0}
+.total{max-width:330px;margin:14px auto 0;display:none}
+.total.on{display:block}
+.total .basket{border-color:#BDEBD0;background:#F2FCF6}
+.pad{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:6px}
+.pad button{width:clamp(50px,11vw,64px);height:clamp(50px,11vw,64px);border-radius:50%;border:0;background:#fff;box-shadow:0 4px 0 var(--line),inset 0 0 0 3px var(--line);font:800 clamp(24px,5vw,32px) "Baloo 2",sans-serif;color:var(--ink);cursor:pointer}
+.pad button.ok{background:var(--good);color:#fff;box-shadow:0 4px 0 #1E8A55}
+.pad button.no{animation:shake .4s}
+
+.board h3{margin:0 0 10px;font-size:19px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#FFF1D6;border-radius:14px;padding:4px 14px;font:800 24px "Baloo 2",sans-serif}
+.chip.twin{background:#E3F4FF}
+.hint{color:#B9997A;font-size:15px}
+.find{margin:12px 8px 0 0;font:800 clamp(24px,5vw,34px) "Baloo 2","Noto Sans TC",sans-serif;color:#7B4DD8;background:#F3ECFF;border-radius:18px;padding:6px 18px;display:inline-block;animation:pop .5s}
+.note{font-size:14px;color:#8A6E55;text-align:center;line-height:1.6}
+
+.cf{position:fixed;top:-20px;width:10px;height:14px;z-index:60;border-radius:3px;animation:fall 1.7s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+.wsopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.opt>label,.opt>.t{display:block;font-weight:800;margin-bottom:6px}
+.chk{display:flex;gap:8px;align-items:center;font-size:15px;margin:4px 0;cursor:pointer}
+#wsPrev{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
+.frame{overflow:hidden;box-shadow:0 4px 16px #0002;border-radius:4px;background:#fff}
+.frame .ws-page{transform-origin:0 0}
+#wsNote{min-height:22px;font-weight:700}
+#wsPrint{display:none}
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  body>*{display:none!important}
+  #wsPrint{display:block!important}
+  #wsPrint .ws-page{break-after:page}
+  #wsPrint .ws-page:last-child{break-after:auto}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+<style id="wscss"></style>
+</head>
+<body>
+<header>
+  <h1>🧸 小小加法樂園</h1>
+  <nav class="tabs">
+    <button class="tab on" data-tab="play">玩一玩</button>
+    <button class="tab" data-tab="ws">學習單</button>
+  </nav>
+</header>
+<main>
+<section class="panel on" id="p-play">
+  <div class="card">
+    <div class="toolbar">
+      <button class="btn big" id="new">🎲 換一題</button>
+      <label class="mini">最大到 <select id="max"><option value="5">5</option><option value="10" selected>10</option><option value="20">20</option><option value="30">30</option></select></label>
+      <label class="mini"><input type="checkbox" id="zero"> 可以有 0</label>
+      <button class="btn sm" id="snd">🔊 聲音開</button>
+    </div>
+    <div class="eqn num"><span class="n" id="nA">3</span><span class="op">+</span><span class="n" id="nB">4</span><span class="op">=</span><span class="n t q" id="nT">?</span></div>
+    <div class="say"><span class="bear">🐻</span><span id="msg"></span></div>
+    <div class="play" id="play">
+      <div class="col"><div class="basket" id="bkL" data-side="L"></div>
+        <div class="edit"><button data-e="L-" aria-label="左邊少一顆">−</button><button data-e="L+" aria-label="左邊多一顆">+</button></div></div>
+      <div class="plus num">+</div>
+      <div class="col"><div class="basket" id="bkR" data-side="R"></div>
+        <div class="edit"><button data-e="R-" aria-label="右邊少一顆">−</button><button data-e="R+" aria-label="右邊多一顆">+</button></div></div>
+    </div>
+    <div class="toolbar" style="margin-top:16px">
+      <button class="btn blue" id="swap">🔁 交換看看</button>
+      <button class="btn green" id="cnt">🧮 合起來數一數</button>
+    </div>
+    <div class="total" id="total"><div class="lbl">合起來</div><div class="basket" id="bkT"></div></div>
+    <div class="lbl" style="margin-top:16px">一共有幾顆？點數字回答</div>
+    <div class="pad" id="pad"></div>
+  </div>
+  <div class="card board">
+    <h3 id="bdTitle">🔍 我的發現</h3>
+    <div class="chips" id="chips"></div>
+    <div id="finds"></div>
+  </div>
+  <p class="note">玩法：把球<b>拖到另一個籃子</b>，或按「交換看看」，看看總數會不會變。<br>輕點球可以一顆一顆數；籃子下面的 − / + 給大人自訂題目。</p>
+</section>
+
+<section class="panel" id="p-ws">
+  <div class="card">
+    <div class="wsopts">
+      <div class="opt"><label for="wsN">題數</label>
+        <select id="wsN"><option>6</option><option selected>8</option><option>10</option><option>12</option><option>16</option></select></div>
+      <div class="opt"><label for="wsMax">最大到</label>
+        <select id="wsMax"><option value="5">5 以內</option><option value="10" selected>10 以內</option><option value="20">20 以內</option><option value="30">30 以內</option></select></div>
+      <div class="opt"><label for="wsIcon">圖案</label>
+        <select id="wsIcon"><option value="mix">混合</option><option value="ball">球</option><option value="apple">蘋果</option><option value="star">星星</option><option value="heart">愛心</option><option value="fish">小魚</option></select></div>
+      <div class="opt"><span class="t">題型</span>
+        <label class="chk"><input type="checkbox" id="tp-pic" checked> 看圖算答案</label>
+        <label class="chk"><input type="checkbox" id="tp-pair" checked> 交換配對（3+4 / 4+3）</label>
+        <label class="chk"><input type="checkbox" id="tp-write"> 看圖寫算式</label></div>
+    </div>
+    <div class="toolbar" style="margin-top:16px">
+      <button class="btn big" id="wsGen">🎲 重新產生</button>
+      <button class="btn" id="wsShow">👀 顯示答案</button>
+      <button class="btn green" id="wsPrintBtn">🖨️ 列印</button>
+      <button class="btn" id="wsDl">⬇️ 下載</button>
+      <label class="mini"><input type="checkbox" id="wsKey" checked> 附答案頁</label>
+    </div>
+    <p class="note" id="wsNote">按「列印」可直接印成 A4，或在列印視窗選「另存為 PDF」。「下載」會存成一個 HTML 檔，之後離線也能開啟列印。</p>
+  </div>
+  <div id="wsPrev"></div>
+</section>
+</main>
+<footer class="note" style="padding:0 14px 28px">小小加法樂園 · 免費開放使用 · 所有內容都在你的瀏覽器中執行，不收集任何資料</footer>
+<div id="wsPrint"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const rand=(lo,hi)=>lo+Math.floor(Math.random()*(hi-lo+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ================= 聲音 ================= */
+let AC=null;
+function tone(f=520,d=.12,type='sine',vol=.18){
+  if(!S.sound) return;
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(vol,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);
+    o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}
+}
+function chime(){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.28,'triangle',.2),i*110));}
+function speak(t){
+  if(!S.sound) return;
+  try{const ss=window.speechSynthesis;if(!ss) return;ss.cancel();
+    const u=new SpeechSynthesisUtterance(t);u.lang='zh-TW';u.rate=.9;u.pitch=1.15;
+    const vs=ss.getVoices();const v=vs.find(v=>/zh[-_](TW|HK)|Hant/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang));
+    if(v)u.voice=v;ss.speak(u);}catch(e){}
+}
+
+/* ================= 練習狀態 ================= */
+const S={balls:[],revealed:false,tap:{},tapN:0,log:[],max:10,zero:false,sound:true,showTotal:false,shownN:0,wrong:0,busy:false,counting:false};
+let uid=0;
+const side=s=>S.balls.filter(x=>x.s===s);
+const CAP=()=>S.max>20?20:10;
+const A=()=>side('L').length,B=()=>side('R').length,T=()=>S.balls.length;
+function say(t){$('#msg').textContent=t;}
+function resetTap(){S.tap={};S.tapN=0;}
+
+function setProblem(a,b){
+  S.balls=[];
+  for(let i=0;i<a;i++)S.balls.push({id:uid++,c:'a',s:'L'});
+  for(let i=0;i<b;i++)S.balls.push({id:uid++,c:'b',s:'R'});
+  S.revealed=false;S.log=[];S.showTotal=false;S.wrong=0;resetTap();
+  say(`數一數，${a} 加 ${b} 是多少呢？`);
+  render();
+}
+function newProblem(){
+  if(S.busy) return;
+  const lo=S.zero?0:1;let a,b,n=0;
+  do{a=rand(lo,Math.min(CAP(),S.max-lo));b=rand(lo,Math.min(CAP(),S.max-a));n++;}
+  while(n<60&&((a===A()&&b===B())||a+b<2));
+  setProblem(a,b);
+}
+
+/* ================= 畫面 ================= */
+function ballHTML(x,label,cls='',drag=true){
+  return `<div class="ball ${x.c} ${cls}${drag?'':' static'}"${drag?` data-id="${x.id}"`:''}>${label??''}</div>`;
+}
+function frame(el,list,lab,slots=10){
+  let h='';
+  for(let i=0;i<slots;i++){const x=list[i];if(i&&i%10===0)h+='<div class="gap10"></div>';h+=`<div class="slot">${x?lab(x,i):''}</div>`;}
+  el.innerHTML=h;
+}
+function render(){
+  frame($('#bkL'),side('L'),x=>ballHTML(x,S.tap[x.id]||''),CAP());
+  frame($('#bkR'),side('R'),x=>ballHTML(x,S.tap[x.id]||''),CAP());
+  $('#nA').textContent=A();$('#nB').textContent=B();
+  const t=$('#nT');t.textContent=S.revealed?T():'?';t.classList.toggle('q',!S.revealed);
+  renderTotal();renderPad();renderBoard();
+}
+function renderTotal(){
+  const box=$('#total');box.classList.toggle('on',S.showTotal);
+  if(!S.showTotal) return;
+  const list=[...side('L'),...side('R')];
+  frame($('#bkT'),list,(x,i)=>ballHTML(x,i<S.shownN?i+1:'',i<S.shownN?(i===S.shownN-1&&S.counting?'in':''):'hide',false),Math.max(10,Math.ceil(list.length/10)*10));
+}
+function renderPad(){
+  const top=Math.max(S.max,T());let h='';
+  for(let i=S.zero?0:1;i<=top;i++)h+=`<button data-n="${i}" class="${S.revealed&&i===T()?'ok':''}">${i}</button>`;
+  $('#pad').innerHTML=h;
+}
+function renderBoard(){
+  $('#bdTitle').textContent=S.revealed?`🔍 我的發現：合起來都是 ${T()}`:'🔍 我的發現';
+  if(!S.log.length){$('#chips').innerHTML='<span class="hint">答對以後，這裡會記下你找到的算式。</span>';$('#finds').innerHTML='';return;}
+  const has=(a,b)=>S.log.some(p=>p.a===a&&p.b===b);
+  $('#chips').innerHTML=S.log.map(p=>`<span class="chip${p.a!==p.b&&has(p.b,p.a)?' twin':''}">${p.a} + ${p.b} = ${p.a+p.b}</span>`).join('');
+  $('#finds').innerHTML=S.log.filter(p=>p.a<p.b&&has(p.b,p.a)).map(p=>`<span class="find">✨ ${p.a} + ${p.b} ＝ ${p.b} + ${p.a}</span>`).join('');
+}
+function logPair(){const a=A(),b=B();if(!S.log.some(p=>p.a===a&&p.b===b))S.log.push({a,b});}
+const twin=()=>A()!==B()&&S.log.some(p=>p.a===B()&&p.b===A());
+
+/* ================= 回答 ================= */
+function answer(n,btn){
+  if(S.busy) return;
+  if(n===T()){
+    const first=!S.revealed;S.revealed=true;S.wrong=0;logPair();render();
+    const t=$('#nT');t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');
+    chime();confetti();speak(`${A()}加${B()}等於${T()}`);
+    if(twin()) say(`你發現了嗎？${A()} + ${B()} 和 ${B()} + ${A()} 都是 ${T()}！`);
+    else if(A()===B()) say(`答對了！${A()} + ${B()} = ${T()}，拖一顆球到另一邊試試看`);
+    else say(first?`答對了！${A()} + ${B()} = ${T()}　按「交換看看」，答案會變嗎？`:`對！還是 ${T()}`);
+  }else{
+    S.wrong++;btn.classList.add('no');setTimeout(()=>btn.classList.remove('no'),450);
+    tone(220,.2,'square',.06);
+    if(S.wrong>=2){say('沒關係，我們一起數一數 👇');countUp();}
+    else say('再數一數看看喔！');
+  }
+}
+function countUp(){
+  if(S.counting||S.busy) return;
+  S.counting=true;S.showTotal=true;S.shownN=0;renderTotal();
+  $('#total').scrollIntoView({behavior:'smooth',block:'nearest'});
+  const iv=setInterval(()=>{
+    S.shownN++;renderTotal();tone(380+S.shownN*55,.15,'triangle',.18);speak(String(S.shownN));
+    if(S.shownN>=T()){clearInterval(iv);S.counting=false;renderTotal();
+      setTimeout(()=>say(S.revealed?`數完了，一共 ${T()} 顆！`:'數完了！最後一顆是第幾顆？點下面的數字'),300);}
+  },650);
+  if(T()===0){clearInterval(iv);S.counting=false;}
+}
+
+/* ================= 交換 ================= */
+function swap(){
+  if(S.busy||S.counting) return;
+  S.busy=true;
+  const L=$('#bkL'),R=$('#bkR'),na=$('#nA'),nb=$('#nB');
+  const r1=L.getBoundingClientRect(),r2=R.getBoundingClientRect();
+  const dx=r2.left-r1.left,dy=r2.top-r1.top;
+  L.style.transform=`translate(${dx}px,${dy}px)`;R.style.transform=`translate(${-dx}px,${-dy}px)`;
+  const q1=na.getBoundingClientRect(),q2=nb.getBoundingClientRect();
+  na.style.transform=`translateX(${q2.left-q1.left}px)`;nb.style.transform=`translateX(${q1.left-q2.left}px)`;
+  tone(330,.3,'sine',.15);setTimeout(()=>tone(495,.3,'sine',.15),200);
+  setTimeout(()=>{
+    const els=[L,R,na,nb];
+    els.forEach(e=>{e.style.transition='none';e.style.transform='';});
+    S.balls.forEach(x=>x.s=x.s==='L'?'R':'L');resetTap();
+    if(S.showTotal) S.shownN=T();
+    render();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>els.forEach(e=>e.style.transition='')));
+    S.busy=false;
+    if(S.revealed){logPair();renderBoard();
+      speak(`${A()}加${B()}，還是等於${T()}`);
+      say(twin()?`交換位置，${A()} + ${B()} 還是 ${T()}！`:`換過來了，還是 ${T()}！`);
+    }else say(`換過來了！現在是 ${A()} + ${B()}，一共有幾顆？`);
+  },650);
+}
+
+/* ================= 編輯 ================= */
+function edit(s,d){
+  if(S.busy||S.counting) return;
+  if(d>0){if(side(s).length>=CAP()){say(`一個籃子最多 ${CAP()} 顆喔！`);return;}S.balls.push({id:uid++,c:s==='L'?'a':'b',s});}
+  else{const l=side(s);if(!l.length)return;S.balls.splice(S.balls.indexOf(l[l.length-1]),1);}
+  S.revealed=false;S.log=[];S.showTotal=false;S.wrong=0;resetTap();tone(d>0?600:400,.1);
+  say(`現在是 ${A()} + ${B()}，一共有幾顆？`);render();
+}
+
+/* ================= 拖曳 ================= */
+let drag=null;
+$('#play').addEventListener('pointerdown',e=>{
+  const b=e.target.closest('.ball[data-id]');if(!b||S.busy)return;
+  e.preventDefault();
+  drag={id:+b.dataset.id,el:b,x0:e.clientX,y0:e.clientY,moving:false,ghost:null,over:null};
+});
+window.addEventListener('pointermove',e=>{
+  if(!drag) return;
+  if(!drag.moving){
+    if(Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)<8) return;
+    drag.moving=true;const r=drag.el.getBoundingClientRect();
+    const g=drag.el.cloneNode(true);g.classList.add('ghost');g.style.width=r.width+'px';g.style.height=r.height+'px';
+    document.body.appendChild(g);drag.ghost=g;drag.w=r.width;drag.el.classList.add('lifted');
+  }
+  drag.ghost.style.left=(e.clientX-drag.w/2)+'px';drag.ghost.style.top=(e.clientY-drag.w/2)+'px';
+  const t=document.elementFromPoint(e.clientX,e.clientY);const bk=t&&t.closest('.basket[data-side]');
+  if(drag.over&&drag.over!==bk)drag.over.classList.remove('over');
+  if(bk){bk.classList.add('over');drag.over=bk;}else drag.over=null;
+});
+function endDrag(e,cancel){
+  if(!drag) return;const d=drag;drag=null;
+  document.querySelectorAll('.basket.over').forEach(x=>x.classList.remove('over'));
+  if(!d.moving){if(!cancel)tapBall(d.id);return;}
+  d.ghost.remove();
+  const ball=S.balls.find(x=>x.id===d.id);
+  const t=cancel?null:document.elementFromPoint(e.clientX,e.clientY);
+  const bk=t&&t.closest('.basket[data-side]');
+  if(ball&&bk&&bk.dataset.side!==ball.s){
+    if(side(bk.dataset.side).length>=CAP()){say('這個籃子滿了！');render();return;}
+    S.balls.splice(S.balls.indexOf(ball),1);ball.s=bk.dataset.side;S.balls.push(ball);
+    resetTap();if(S.showTotal&&!S.counting)S.shownN=T();
+    tone(700,.08,'sine',.2);render();
+    const nb=document.querySelector(`.ball[data-id="${ball.id}"]`);if(nb)nb.classList.add('in');
+    if(S.revealed){logPair();renderBoard();
+      say(twin()?`你發現了嗎？${A()} + ${B()} 和 ${B()} + ${A()} 都是 ${T()}！`:`移動一顆球：${A()} + ${B()}，還是 ${T()} 喔！`);
+      speak(`${A()}加${B()}，也是${T()}`);
+    }else say(`現在是 ${A()} + ${B()}，一共有幾顆？`);
+  }else render();
+}
+window.addEventListener('pointerup',e=>endDrag(e,false));
+window.addEventListener('pointercancel',e=>endDrag(e,true));
+function tapBall(id){
+  if(S.tap[id]) return;
+  S.tap[id]=++S.tapN;tone(380+S.tapN*55,.12,'triangle',.18);speak(String(S.tapN));render();
+}
+
+/* ================= 彩帶 ================= */
+function confetti(){
+  const cols=['#FF7A59','#3FA9F5','#FFC53D','#2BB673','#B37FEB'];
+  for(let i=0;i<36;i++){const d=document.createElement('div');d.className='cf';
+    d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.animationDelay=Math.random()*.4+'s';
+    document.body.appendChild(d);setTimeout(()=>d.remove(),2300);}
+}
+
+/* ================= 事件 ================= */
+$('#new').onclick=newProblem;
+$('#swap').onclick=swap;
+$('#cnt').onclick=countUp;
+$('#pad').addEventListener('click',e=>{const b=e.target.closest('button[data-n]');if(b)answer(+b.dataset.n,b);});
+document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>edit(b.dataset.e[0],b.dataset.e[1]==='+'?1:-1));
+$('#max').onchange=e=>{S.max=+e.target.value;newProblem();};
+$('#zero').onchange=e=>{S.zero=e.target.checked;renderPad();};
+$('#snd').onclick=e=>{S.sound=!S.sound;e.target.textContent=S.sound?'🔊 聲音開':'🔇 聲音關';try{if(!S.sound)speechSynthesis.cancel();}catch(_){}}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
+  if(t.dataset.tab==='ws')scaleWS();
+});
+
+/* ================= 學習單 ================= */
+const ICONS=['ball','apple','star','heart','fish'];
+const PAL=[['#FF6B6B','#4D96FF'],['#FFB703','#2EC4B6'],['#9B5DE5','#FF70A6'],['#06D6A0','#FF8E3C'],['#EF476F','#118AB2']];
+function iconSVG(t,c){
+  const s='stroke="#3b2e2a" stroke-width="4" stroke-linejoin="round"';let b;
+  switch(t){
+    case 'apple':b=`<path d="M50 32C40 20 12 22 12 52c0 26 18 40 28 40 5 0 7-3 10-3s5 3 10 3c10 0 28-14 28-40 0-30-28-32-38-20z" fill="${c}" ${s}/><path d="M50 32c0-10 3-18 8-24" fill="none" ${s}/><path d="M56 18c8-10 22-10 26-6-6 10-18 12-26 6z" fill="#5CB85C" ${s}/>`;break;
+    case 'star':b=`<polygon points="50,6 62,36 94,38 69,58 78,90 50,72 22,90 31,58 6,38 38,36" fill="${c}" ${s}/>`;break;
+    case 'heart':b=`<path d="M50 88C22 68 6 52 8 32 10 16 24 8 36 10c7 1 11 6 14 12 3-6 7-11 14-12 12-2 26 6 28 22 2 20-14 36-42 56z" fill="${c}" ${s}/>`;break;
+    case 'fish':b=`<path d="M70 50 94 28v44z" fill="${c}" ${s}/><ellipse cx="44" cy="50" rx="36" ry="26" fill="${c}" ${s}/><circle cx="26" cy="45" r="5" fill="#3b2e2a"/>`;break;
+    default:b=`<circle cx="50" cy="50" r="42" fill="${c}" ${s}/><ellipse cx="36" cy="34" rx="11" ry="8" fill="#fff" opacity=".7"/>`;
+  }
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${b}</svg>`;
+}
+const WS_CSS=`
+.ws-page{width:210mm;height:296.5mm;overflow:hidden;padding:11mm 12mm 7mm;box-sizing:border-box;background:#fff;color:#2b2420;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;display:flex;flex-direction:column;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ws-page .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:.7mm solid #2b2420;padding-bottom:2.5mm;margin-bottom:4mm}
+.ws-page .tt{font-size:8mm;font-weight:900}
+.ws-page .tt em{font-style:normal;color:#e63946}
+.ws-page .tip{font-size:4mm;margin-top:1mm;color:#555}
+.ws-page .nmline{font-size:4.2mm;line-height:1.9;text-align:right}
+.ws-page .rows{flex:1;display:grid;grid-template-rows:repeat(4,1fr);gap:4mm;min-height:0}
+.ws-page .r{display:grid;grid-template-columns:1fr 1fr;gap:4mm;min-height:0}
+.ws-page .c{border:.5mm dashed #c9bfb3;border-radius:4mm;padding:6mm 3mm 3mm;position:relative;display:flex;flex-direction:column;justify-content:space-around;align-items:center;min-height:0}
+.ws-page .c.full{grid-column:1/-1}
+.ws-page .no{position:absolute;left:3mm;top:1.6mm;font-size:3.6mm;color:#8a7d70;font-weight:700}
+.ws-page .two{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:3mm}
+.ws-page .h{display:flex;flex-direction:column;align-items:center;gap:2.5mm}
+.ws-page .pics{display:flex;align-items:center;justify-content:center;gap:2mm;min-height:13.4mm}
+.ws-page .g{display:grid;gap:1mm}
+.ws-page .g svg{width:6.2mm;height:6.2mm;display:block}
+.ws-page .g .sp{grid-column:1/-1;height:.6mm}
+.ws-page.big .g svg{width:4.6mm;height:4.6mm}
+.ws-page.big .pics{min-height:20mm}
+.ws-page .op{font-size:6mm;font-weight:900;color:#8a7d70}
+.ws-page .eq{display:flex;align-items:center;gap:2.2mm;font-family:"Baloo 2","Noto Sans TC",sans-serif;font-weight:800;font-size:9mm;line-height:1}
+.ws-page .eq.sm{font-size:7.5mm;margin-top:1mm}
+.ws-page .eq b{font-weight:800;color:#8a7d70}
+.ws-page .nm{min-width:6mm;text-align:center}
+.ws-page .bx{width:12mm;height:12mm;border:.6mm solid #2b2420;border-radius:2.2mm;display:inline-flex;align-items:center;justify-content:center;background:#fff}
+.ws-page .eq.sm .bx{width:10.5mm;height:10.5mm}
+.ws-page .bx i{font-style:normal;color:#e63946}
+.ws-page .ft{text-align:center;font-size:3.2mm;color:#aaa;margin-top:2mm}`;
+$('#wscss').textContent=WS_CSS;
+
+const W={n:8,max:10,icon:'mix',types:{pic:true,pair:true,write:false},show:false,key:true,rows:[]};
+function genWS(){
+  let types=Object.keys(W.types).filter(k=>W.types[k]);
+  if(!types.length){W.types.pic=true;$('#tp-pic').checked=true;types=['pic'];}
+  const used=new Set();
+  const mk=diff=>{
+    for(let i=0;i<120;i++){const cp=W.max>20?20:10,a=rand(1,Math.min(cp,W.max-1)),b=rand(1,Math.min(cp,W.max-a));
+      if(diff&&a===b)continue;const k=a+'+'+b;if(used.has(k)&&i<90)continue;
+      used.add(k);if(diff)used.add(b+'+'+a);return[a,b];}
+    return[1,2];
+  };
+  const items=[];let left=W.n;
+  while(left>0){
+    let t=pick(types);if(t==='pair'&&left<2)t=types.find(x=>x!=='pair')||'pic';
+    const[a,b]=mk(t==='pair');
+    items.push({t,a,b,icon:W.icon==='mix'?pick(ICONS):W.icon,col:pick(PAL)});
+    left-=t==='pair'?2:1;
+  }
+  const singles=items.filter(i=>i.t!=='pair'),pr=items.filter(i=>i.t==='pair').map(p=>[p]);
+  const sr=[];for(let i=0;i<singles.length;i+=2)sr.push(singles.slice(i,i+2));
+  W.rows=[];while(sr.length||pr.length){if(sr.length)W.rows.push(sr.shift());if(pr.length)W.rows.push(pr.shift());}
+  renderWS();
+}
+const grp=(n,ic,c)=>n?`<div class="g" style="grid-template-columns:repeat(${Math.min(n,5)},auto)">${Array.from({length:n},(_,i)=>(i&&i%10===0?'<i class="sp"></i>':'')+iconSVG(ic,c)).join('')}</div>`:'';
+const bx=(v,show)=>`<span class="bx">${show?`<i>${v}</i>`:''}</span>`;
+const nm=v=>`<span class="nm">${v}</span>`;
+function halfHTML(a,b,ic,col,mode,show){
+  const eq=mode==='write'?`${bx(a,show)}<b>+</b>${bx(b,show)}<b>=</b>${bx(a+b,show)}`:`${nm(a)}<b>+</b>${nm(b)}<b>=</b>${bx(a+b,show)}`;
+  return `<div class="pics">${grp(a,ic,col[0])}<span class="op">+</span>${grp(b,ic,col[1])}</div><div class="eq">${eq}</div>`;
+}
+function cardHTML(it,no,show){
+  if(it.t==='pair') return `<div class="c full"><span class="no">${no}、${no+1}　🔁 交換位置，答案一樣嗎？</span>
+    <div class="two"><div class="h">${halfHTML(it.a,it.b,it.icon,it.col,'pic',show)}</div><div class="h">${halfHTML(it.b,it.a,it.icon,[it.col[1],it.col[0]],'pic',show)}</div></div>
+    <div class="eq sm">${nm(it.a)}<b>+</b>${nm(it.b)}<b>=</b>${nm(it.b)}<b>+</b>${bx(it.a,show)}</div></div>`;
+  return `<div class="c"><span class="no">${no}</span>${halfHTML(it.a,it.b,it.icon,it.col,it.t,show)}</div>`;
+}
+function pagesHTML(show,isKey){
+  let no=1;const out=[];const R=W.rows,P=Math.ceil(R.length/4);
+  for(let p=0;p<R.length;p+=4){
+    const rs=R.slice(p,p+4).map(row=>`<div class="r">${row.map(it=>{const h=cardHTML(it,no,show);no+=it.t==='pair'?2:1;return h;}).join('')}</div>`);
+    while(rs.length<4)rs.push('<div class="r"></div>');
+    out.push(`<section class="ws-page${W.max>20?' big':''}"><div class="hd"><div><div class="tt">${isKey?'<em>答案</em>　':''}${W.max} 以內的加法 ✏️</div><div class="tip">數一數圖案，把數字寫在 □ 裡。</div></div><div class="nmline">姓名＿＿＿＿＿＿＿<br>日期＿＿＿＿＿＿＿</div></div><div class="rows">${rs.join('')}</div><div class="ft">${p/4+1} / ${P}</div></section>`);
+  }
+  return out.join('');
+}
+function renderWS(){
+  const host=$('#wsPrev');host.innerHTML=pagesHTML(W.show,false);
+  host.querySelectorAll('.ws-page').forEach(pg=>{const f=document.createElement('div');f.className='frame';pg.replaceWith(f);f.appendChild(pg);});
+  scaleWS();
+}
+function scaleWS(){
+  const w=$('#wsPrev').clientWidth;if(!w)return;const s=Math.min(1,w/794);
+  document.querySelectorAll('#wsPrev .frame').forEach(f=>{f.style.width=794*s+'px';f.style.height=1121*s+'px';f.firstElementChild.style.transform=`scale(${s})`;});
+}
+window.addEventListener('resize',scaleWS);
+function wsFile(){
+  const body=pagesHTML(false,false)+(W.key?pagesHTML(true,true):'');
+  return `<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${W.max} 以內的加法學習單</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>${WS_CSS}
+@page{size:A4;margin:0}body{margin:0;background:#eee}
+.ws-page{margin:8mm auto;box-shadow:0 2px 10px #0002}
+.bar{position:sticky;top:0;background:#FFF6E5;padding:10px;text-align:center;font-family:sans-serif;font-size:14px;z-index:9;box-shadow:0 2px 6px #0001}
+.bar button{font-size:18px;font-weight:800;padding:10px 22px;border-radius:12px;border:0;background:#FF9F1C;color:#fff;cursor:pointer;margin-right:10px}
+@media print{body{background:#fff}.bar{display:none}.ws-page{margin:0;box-shadow:none;break-after:page}.ws-page:last-child{break-after:auto}}
+</style></head><body><div class="bar"><button onclick="window.print()">🖨️ 列印 / 存成 PDF</button>紙張選 A4、邊界選「無」或「預設」</div>${body}</body></html>`;
+}
+function stamp(){const d=new Date();return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;}
+function downloadWS(){
+  const blob=new Blob([wsFile()],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`加法學習單_${W.max}以內_${stamp()}.html`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  $('#wsNote').textContent='✅ 已下載！用瀏覽器打開檔案，按「列印」就能印成 A4。';
+}
+function printWS(){
+  $('#wsPrint').innerHTML=pagesHTML(false,false)+(W.key?pagesHTML(true,true):'');
+  window.print();
+}
+$('#wsGen').onclick=genWS;
+$('#wsShow').onclick=e=>{W.show=!W.show;e.target.textContent=W.show?'🙈 隱藏答案':'👀 顯示答案';renderWS();};
+$('#wsDl').onclick=downloadWS;
+$('#wsPrintBtn').onclick=printWS;
+$('#wsKey').onchange=e=>W.key=e.target.checked;
+$('#wsN').onchange=e=>{W.n=+e.target.value;genWS();};
+$('#wsMax').onchange=e=>{W.max=+e.target.value;genWS();};
+$('#wsIcon').onchange=e=>{W.icon=e.target.value;genWS();};
+['pic','pair','write'].forEach(k=>$('#tp-'+k).onchange=e=>{W.types[k]=e.target.checked;genWS();});
+
+/* ================= 開始 ================= */
+setProblem(3,4);
+genWS();
+</script>
+</body>
+</html>
